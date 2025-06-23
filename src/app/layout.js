@@ -1,4 +1,3 @@
-
 // Make sure you have 'geist' package installed: npm install geist
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
@@ -18,13 +17,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
    return (
       <html lang="en">
-                  
          <body
             className={`${geistSans.className} ${geistMono.className} antialiased`}
          >
             {children}
          </body>
-              {" "}
       </html>
    );
 }

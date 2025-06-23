@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "@fontsource/dancing-script";
+
+.font-signature {
+   font-family: "Dancing Script", cursive;
+}
+
 :root {
    --background: #ffffff;
    --foreground: #171717;
