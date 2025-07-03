@@ -22,6 +22,12 @@ body {
    font-family: Arial, Helvetica, sans-serif;
 }
 
-/* your scrollbar styles etc. */
-
+/* your SIDE scrollbar styles in carousel etc. */
+/* .scrollbar-hide::-webkit-scrollbar {
+   display: none;
+}
+.scrollbar-hide {
+   -ms-overflow-style: none;
+   scrollbar-width: none;
+} */
 /* primary */

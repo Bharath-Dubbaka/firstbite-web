@@ -2,13 +2,13 @@ import Image from "next/image";
 
 export default function Hero() {
    return (
-      <section className="relative min-h-[90vh] bg-white overflow-hidden">
+      <section className="relative min-h-[85vh] bg-white overflow-hidden">
          {/* Background Image */}
          <Image
             src="/hero_five.png"
             alt="Spice Background"
             fill
-            className="object-cover object-center z-0 opacity-90 "
+            className="object-cover object-top z-0 opacity-90"
             priority
          />
 
