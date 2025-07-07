@@ -12,20 +12,18 @@ export default function Header() {
 
          {/* Center Nav */}
          <nav className="hidden md:flex gap-8 text-sm uppercase tracking-wide text-green-900 font-semibold">
-            <Link className=" hover:text-red-600" href="#">
-               Recipes
+            <Link className=" hover:text-red-600" href="/">
+               Home
             </Link>
-            <Link className=" hover:text-red-600" href="#">
-               Nature
-            </Link>
-            <Link className=" hover:text-red-600" href="#">
-               Garden
-            </Link>
-            <Link className=" hover:text-red-600" href="#">
+            <Link className=" hover:text-red-600" href="/about">
                About
             </Link>
-           
-           
+            <Link className=" hover:text-red-600" href="/contact">
+               Contact
+            </Link>
+            <Link className=" hover:text-red-600" href="whyus">
+               Why us
+            </Link>
          </nav>
 
          {/* Right Button */}

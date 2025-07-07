@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const cafeMenu = [
    {
-      section: "Quick Bites",
+      section: "Quick Bites:",
       items: [
          { name: "Masala Chai", price: 60, image: "/cafe/coffee.jpg" },
          { name: "Cold Coffee", price: 90, image: "/cafe/fries.jpg" },
@@ -17,7 +17,7 @@ const cafeMenu = [
       ],
    },
    {
-      section: "Hot & Cold Beverages",
+      section: "Hot & Cold Beverages:",
       items: [
          { name: "Masala Chai", price: 60, image: "/cafe/coffee.jpg" },
          { name: "Cold Coffee", price: 90, image: "/cafe/fries.jpg" },
@@ -32,7 +32,22 @@ const cafeMenu = [
       ],
    },
    {
-      section: "Desserts",
+      section: "Breakfasts:",
+      items: [
+         { name: "Masala Chai", price: 60, image: "/cafe/coffee.jpg" },
+         { name: "Cold Coffee", price: 90, image: "/cafe/fries.jpg" },
+         { name: "Veg Puff", price: 70, image: "/cafe/latte.jpg" },
+         { name: "Choco Lava Cake", price: 109, image: "/cafe/pancakes.jpg" },
+         { name: "Paneer Sandwich", price: 139, image: "/cafe/fries.jpg" },
+         { name: "Masala Chai", price: 60, image: "/cafe/coffee.jpg" },
+         { name: "Cold Coffee", price: 90, image: "/cafe/fries.jpg" },
+         { name: "Veg Puff", price: 70, image: "/cafe/latte.jpg" },
+         { name: "Choco Lava Cake", price: 109, image: "/cafe/pancakes.jpg" },
+         { name: "Paneer Sandwich", price: 139, image: "/cafe/fries.jpg" },
+      ],
+   },
+   {
+      section: "Desserts:",
       items: [
          { name: "Masala Chai", price: 60, image: "/cafe/coffee.jpg" },
          { name: "Cold Coffee", price: 90, image: "/cafe/fries.jpg" },
@@ -50,7 +65,7 @@ const cafeMenu = [
 
 export default function CafeMenuCarousel() {
    return (
-      <div className="space-y-10 mt-8 text-black">
+      <div className="space-y-10 mt-8 text-black ">
          {cafeMenu.map((group, idx) => (
             <div key={idx}>
                <h3 className="text-2xl font-bold mb-4 text-green-800">

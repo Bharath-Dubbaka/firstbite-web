@@ -3,6 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 
 import "./globals.css";
+import Header from "../components/Header";
 
 // Assign them to your variables
 const geistSans = GeistSans;
@@ -20,6 +21,8 @@ export default function RootLayout({ children }) {
          <body
             className={`${geistSans.className} ${geistMono.className} antialiased`}
          >
+            <Header />
+
             {children}
          </body>
       </html>

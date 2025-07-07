@@ -7,8 +7,8 @@ export default function MainMenus() {
    const [activeMenu, setActiveMenu] = useState("cafe");
 
    return (
-      <section className="bg-[#fcf7f2] pt-8 pb-20 px-4">
-         <div className="max-w-7xl mx-auto">
+      <section className="bg-white pt-8 pb-20 px-4 ">
+         <div className="max-w-[90%] mx-auto">
             <div className="flex justify-center gap-4">
                <button
                   onClick={() => setActiveMenu("cafe")}
@@ -32,7 +32,7 @@ export default function MainMenus() {
                </button>
             </div>
 
-            <div className="mt-10">
+            <div className="mt-10 px-10 py-4 bg-[#fcf7f2] backdrop-blur-md rounded-xl">
                {activeMenu === "cafe" ? (
                   <CafeMenuCarousel />
                ) : (
