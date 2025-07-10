@@ -20,7 +20,7 @@ export default function Hero() {
    }, []);
 
    return (
-      <section className="relative min-h-full bg-gradient-to-br from-orange-50 via-yellow-50 to-green-50 overflow-hidden pt-40 md:pt-0">
+      <section className="relative min-h-full bg-gradient-to-br from-orange-50 via-yellow-50 to-green-50 overflow-hidden pt-28 md:pt-0">
          {/* Animated Background Elements */}
          <div className="absolute inset-0 overflow-hidden">
             {/* Floating Spice Particles */}
