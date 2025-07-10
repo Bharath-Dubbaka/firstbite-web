@@ -3,15 +3,16 @@
 import { useState, useEffect, useRef } from "react"; // Added useRef
 import Hero from "../components/Hero";
 import Header from "../components/Header";
-import Menus from "../components/MainMenus";
+import EnhancedMenuSystem from "../components/ui/EnhancedMenuSystem";
+import Howitworks from "./howitworks/page";
 
 export default function Home() {
    return (
       <div className="bg-gray-900 text-white">
-         <div>
+         <div className="bg-gradient-to-br from-orange-50 via-yellow-50 to-green-50 overflow-hidden">
             <Hero />
-            <Menus />
-            <div className="pb-20 bg-white"></div>
+            <EnhancedMenuSystem />
+            <Howitworks />
          </div>
       </div>
    );
