@@ -5,6 +5,7 @@ import Hero from "../components/Hero";
 import Header from "../components/Header";
 import EnhancedMenuSystem from "../components/ui/EnhancedMenuSystem";
 import Howitworks from "./howitworks/page";
+import Testimonials from "../components/ui/TestimonialsSection";
 
 export default function Home() {
    return (
@@ -13,6 +14,7 @@ export default function Home() {
             <Hero />
             <EnhancedMenuSystem />
             <Howitworks />
+            <Testimonials />
          </div>
       </div>
    );

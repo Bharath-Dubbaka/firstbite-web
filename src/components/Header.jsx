@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
    Menu,
@@ -70,17 +71,20 @@ export default function Header() {
                {/* Desktop Navigation */}
                <nav className="hidden lg:flex items-center space-x-8">
                   {navItems.map((item, index) => (
-                     <motion.a
+                     <motion.div
                         key={item.href}
-                        href={item.href}
-                        className="text-gray-700 hover:text-red-500 font-medium text-sm uppercase tracking-wide transition-colors duration-200"
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
                         whileHover={{ scale: 1.05 }}
                      >
-                        {item.label}
-                     </motion.a>
+                        <Link
+                           href={item.href}
+                           className="text-gray-700 hover:text-red-500 font-medium text-sm uppercase tracking-wide transition-colors duration-200"
+                        >
+                           {item.label}
+                        </Link>
+                     </motion.div>
                   ))}
                </nav>
 
@@ -125,17 +129,20 @@ export default function Header() {
                >
                   <div className="px-4 py-6 space-y-4">
                      {navItems.map((item, index) => (
-                        <motion.a
+                        <motion.div
                            key={item.href}
-                           href={item.href}
-                           className="block text-gray-700 hover:text-red-500 font-medium text-base uppercase tracking-wide transition-colors duration-200 py-2"
-                           initial={{ opacity: 0, x: -20 }}
-                           animate={{ opacity: 1, x: 0 }}
-                           transition={{ duration: 0.3, delay: index * 0.1 }}
-                           onClick={() => setIsMenuOpen(false)}
+                           initial={{ opacity: 0, y: -20 }}
+                           animate={{ opacity: 1, y: 0 }}
+                           transition={{ duration: 0.5, delay: index * 0.1 }}
+                           whileHover={{ scale: 1.05 }}
                         >
-                           {item.label}
-                        </motion.a>
+                           <Link
+                              href={item.href}
+                              className="text-gray-700 hover:text-red-500 font-medium text-sm uppercase tracking-wide transition-colors duration-200"
+                           >
+                              {item.label}
+                           </Link>
+                        </motion.div>
                      ))}
                      <motion.button
                         className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-3 rounded-full font-semibold mt-4"

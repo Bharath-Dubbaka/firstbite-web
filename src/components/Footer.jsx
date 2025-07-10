@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
    Menu,
@@ -164,13 +165,13 @@ export default function Footer() {
                   >
                      {quickLinks.map((link, index) => (
                         <li key={link.href}>
-                           <a
+                           <Link
                               href={link.href}
                               className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center space-x-2 group"
                            >
                               <span className="w-1.5 h-1.5 bg-red-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
                               <span>{link.label}</span>
-                           </a>
+                           </Link>
                         </li>
                      ))}
                   </motion.ul>
@@ -298,19 +299,19 @@ export default function Footer() {
                      whileInView={{ opacity: 1 }}
                      transition={{ duration: 0.6, delay: 0.1 }}
                   >
-                     <a
+                     <Link
                         href="/privacy"
                         className="text-gray-400 hover:text-white transition-colors duration-200"
                      >
                         Privacy Policy
-                     </a>
+                     </Link>
                      <span className="text-gray-600">|</span>
-                     <a
+                     <Link
                         href="/terms"
                         className="text-gray-400 hover:text-white transition-colors duration-200"
                      >
-                        Terms of Service
-                     </a>
+                        Terms
+                     </Link>
                   </motion.div>
 
                   <motion.div

@@ -273,8 +273,8 @@ function MenuCard({ item, onAdd, type = "cafe" }) {
                      {item.desc}
                   </p>
 
-                  <div className="flex items-center justify-between">
-                     <div className="flex items-center gap-4">
+                  <div className="flex flex-col md:flex-row items-center justify-between">
+                     <div className="flex items-center p-2 rounded-lg gap-4 bg-green-100">
                         <span className="text-2xl font-bold text-green-700">
                            ₹{item.price}
                         </span>
@@ -290,7 +290,7 @@ function MenuCard({ item, onAdd, type = "cafe" }) {
                      <button
                         onClick={handleAdd}
                         disabled={isAdding}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+                        className={`flex items-center gap-2 px-6 mt-4 py-3 rounded-full font-medium transition-all duration-300 ${
                            isAdding
                               ? "bg-green-500 text-white scale-95"
                               : "bg-green-600 hover:bg-green-700 text-white hover:scale-105"

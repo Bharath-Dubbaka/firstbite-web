@@ -59,7 +59,7 @@ export default function Howitworks() {
    ];
 
    return (
-      <div className=" w-full md:max-w-6xl md:mx-auto py-40 px-4 ">
+      <div className=" w-full md:max-w-6xl md:mx-auto my-32 py-10 px-4 bg-gradient-to-br from-orange-50 via-yellow-50 to-green-50 overflow-hidden">
          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
