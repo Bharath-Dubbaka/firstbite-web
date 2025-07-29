@@ -55,19 +55,23 @@ export default function Header() {
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16 md:h-20">
                {/* Logo */}
-               <motion.div
-                  className="flex items-center space-x-2"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5 }}
+               <Link
+                  href="/"
+                  // className="text-gray-700 hover:text-red-500 font-medium text-sm uppercase tracking-wide transition-colors duration-200"
                >
-                  <div className="text-2xl md:text-3xl">💝</div>
-                  <div className="text-xl md:text-2xl font-bold">
-                     <span className="text-red-500">Love</span>
-                     <span className="text-green-700">@firstbite</span>
-                  </div>
-               </motion.div>
-
+                  <motion.div
+                     className="flex items-center space-x-2"
+                     initial={{ opacity: 0, x: -20 }}
+                     animate={{ opacity: 1, x: 0 }}
+                     transition={{ duration: 0.5 }}
+                  >
+                     <div className="text-2xl md:text-3xl">💝</div>
+                     <div className="text-xl md:text-2xl font-bold">
+                        <span className="text-red-500">Love</span>
+                        <span className="text-green-700">@firstbite</span>
+                     </div>
+                  </motion.div>
+               </Link>
                {/* Desktop Navigation */}
                <nav className="hidden lg:flex items-center space-x-8">
                   {navItems.map((item, index) => (
@@ -99,7 +103,12 @@ export default function Header() {
                      whileTap={{ scale: 0.95 }}
                   >
                      <Heart className="w-4 h-4" />
-                     <span>Order Now</span>
+                     <Link
+                        href="/login"
+                        // className="text-gray-700 hover:text-red-500 font-medium text-sm uppercase tracking-wide transition-colors duration-200"
+                     >
+                        <span>Order Now</span>
+                     </Link>
                   </motion.button>
 
                   {/* Mobile Menu Button */}
@@ -152,7 +161,12 @@ export default function Header() {
                         onClick={() => setIsMenuOpen(false)}
                      >
                         <Heart className="w-4 h-4" />
-                        <span>Order Now</span>
+                        <Link
+                           href="/login"
+                           // className="text-gray-700 hover:text-red-500 font-medium text-sm uppercase tracking-wide transition-colors duration-200"
+                        >
+                           <span>Order Now</span>
+                        </Link>
                      </motion.button>
                   </div>
                </motion.div>
