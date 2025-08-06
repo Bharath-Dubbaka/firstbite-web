@@ -11,6 +11,7 @@ import AuthService from "../services/AuthService";
 import { C } from "jsonparse";
 import { logout } from "../store/slices/authSlice";
 import { LogOut } from "lucide-react";
+import { auth } from "../services/firebase";
 
 // Mobile Responsive Header Component
 export default function Header() {
@@ -18,11 +19,33 @@ export default function Header() {
    const [isScrolled, setIsScrolled] = useState(false);
    const [isLoading, setIsLoading] = useState(false);
    const dispatch = useDispatch();
-   const { user } = useSelector((state) => state.auth);
+   const { user, isAuthenticated } = useSelector((state) => state.auth);
    const { userDetails } = useSelector((state) => state.firebase);
    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
    const dropdownRef = useRef(null);
+
+   //  Add Token Utility for Development REMOVE IN PROD
+   useEffect(() => {
+      if (process.env.NODE_ENV === "development") {
+         window.getIdToken = async () => {
+            try {
+               const user = auth.currentUser;
+
+               if (!user) {
+                  console.warn("User not logged in.");
+                  return;
+               }
+
+               const token = await user.getIdToken(true);
+               await navigator.clipboard.writeText(token);
+               console.log("✅ Firebase Token (copied to clipboard):", token);
+            } catch (error) {
+               console.error("❌ Failed to get token:", error);
+            }
+         };
+      }
+   }, []);
 
    useEffect(() => {
       const handleScroll = () => {
@@ -112,6 +135,25 @@ export default function Header() {
                      </motion.div>
                   ))}
                </nav>
+               {/* REMOVE IN PRODUCTION */}
+               <button
+                  onClick={() => {
+                     auth.currentUser
+                        .getIdToken(true)
+                        .then((token) => {
+                           console.log("Firebase Token:", token);
+                           navigator.clipboard.writeText(token).then(() => {
+                              alert("Token copied to clipboard!");
+                           });
+                        })
+                        .catch((err) => {
+                           console.error("Token fetch failed:", err);
+                           alert("You must be logged in to get a token.");
+                        });
+                  }}
+               >
+                  Copy Firebase Token
+               </button>
 
                {/* Desktop CTA & Mobile Menu Button */}
                {user ? (

@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import { signInWithPhoneNumber } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { auth } from "../services/firebase";
 import { initRecaptcha } from "../lib/initRecaptcha";
 
 const PhoneAuth = () => {

@@ -1,8 +1,8 @@
+// store/slices/firebaseSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-   userDetails: null,
-   //    userQuota: null,
+   userDetails: null, // Database user details from your backend
    loading: false,
    error: null,
 };
@@ -14,11 +14,16 @@ const firebaseSlice = createSlice({
       setUserDetails: (state, action) => {
          state.userDetails = action.payload;
          state.loading = false;
+         state.error = null;
       },
-      //MAYBE WE CAN USE SUBSCRIPTION TYPE HERE
-      //   setUserQuota: (state, action) => {
-      //      state.userQuota = action.payload;
-      //   },
+      updateUserDetails: (state, action) => {
+         if (state.userDetails) {
+            state.userDetails = { ...state.userDetails, ...action.payload };
+         } else {
+            state.userDetails = action.payload;
+         }
+         state.error = null;
+      },
       setLoading: (state, action) => {
          state.loading = action.payload;
       },
@@ -26,20 +31,20 @@ const firebaseSlice = createSlice({
          state.error = action.payload;
          state.loading = false;
       },
-      // clearFirebaseData: (state) => {
-      //    state.userDetails = null;
-      //    //  state.userQuota = null;
-      //    state.loading = false;
-      //    state.error = null;
-      // },
+      clearFirebaseData: (state) => {
+         state.userDetails = null;
+         state.loading = false;
+         state.error = null;
+      },
    },
 });
 
 export const {
    setUserDetails,
-   setUserQuota,
+   updateUserDetails,
    setLoading,
    setError,
-   // clearFirebaseData,
+   clearFirebaseData,
 } = firebaseSlice.actions;
+
 export default firebaseSlice.reducer;
