@@ -14,6 +14,8 @@ class AuthService {
          localStorage.setItem("firebaseToken", idToken);
 
          // ✅ FIX: Create clean user data object
+         const name = result.user.displayName || result.user.email?.split("@")[0] || "User";
+
          const userData = {
             email: result.user.email,
             name: result.user.displayName,
