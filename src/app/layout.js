@@ -7,7 +7,7 @@ import { store } from "../store/store";
 import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import ClientProvider from "@/store/Clientprovider";
+import ClientProvider from "../store/ClientProvider";
 
 // Assign them to your variables
 const geistSans = GeistSans;
