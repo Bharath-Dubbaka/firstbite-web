@@ -294,7 +294,7 @@ export default function EnhancedMenuSystem() {
 
             // Process the flat array from the backend into grouped sections
             const groupedMenu = items.reduce((acc, item) => {
-               // Find if a section for this item's category already exists
+               // Find if a section for this items category already exists
                let section = acc.find((sec) => sec.section === item.category);
 
                // If not, create a new section
@@ -406,7 +406,7 @@ export default function EnhancedMenuSystem() {
                                        className="cursor-pointer"
                                     >
                                        <MenuCard
-                                          key={item._id || i} // Use MongoDB's _id for the key
+                                          key={item._id || i} // Use MongoDBs _id for the key
                                           item={{
                                              ...item,
                                              image: getCafeImage(item, i),

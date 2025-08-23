@@ -187,7 +187,7 @@ export default function Bookus() {
                Our Services
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-               From daily meals to special occasions, we've got you covered with
+               From daily meals to special occasions, we have got you covered with
                our comprehensive food services
             </p>
          </motion.div>

@@ -47,6 +47,6 @@ async function fetchDataWithErrorHandling() {
    }
 }
 
-// Don't call fetchDataWithErrorHandling immediately
+// Do not call fetchDataWithErrorHandling immediately
 // Instead, export it to be called after authentication
 export { fetchDataWithErrorHandling };

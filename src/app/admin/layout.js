@@ -46,7 +46,7 @@ export default function AdminLayout({ children }) {
       router.push("/admin/login");
    };
 
-   // Don't render layout on the login page itself to avoid nested structure
+   // Do not render layout on the login page itself to avoid nested structure
    if (usePathname() === "/admin/login") {
       return <>{children}</>;
    }

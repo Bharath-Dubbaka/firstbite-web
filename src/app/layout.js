@@ -1,4 +1,4 @@
-// Make sure you have 'geist' package installed: npm install geist
+// Make sure you have geist package installed: npm install geist
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Provider } from "react-redux";

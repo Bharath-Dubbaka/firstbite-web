@@ -353,7 +353,7 @@ const MenuModal = ({ item, onClose, onSave }) => {
                   </label>
                   <input
                      name="tags"
-                     placeholder="popular, new, bestseller, 'spicy', 'bestseller' etc"
+                     placeholder="popular, new, bestseller, spicy, bestseller etc"
                      value={formData.tags?.join(", ") || ""}
                      onChange={(e) =>
                         setFormData((prev) => ({
