@@ -102,7 +102,7 @@ const MenuModal = ({ item, onClose, onSave }) => {
                {/* Section */}
                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                     Section*
+                     Section* (Veg/Non-Veg)
                   </label>
                   <input
                      name="section"
@@ -172,7 +172,21 @@ const MenuModal = ({ item, onClose, onSave }) => {
                      className="w-full p-2 border rounded"
                   />
                </div>
-
+               {/* Menu Order */}
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                     Menu Order (ranking)
+                  </label>
+                  <input
+                     type="number"
+                     name="menuOrder"
+                     min="1"
+                     max="99"
+                     value={formData.menuOrder}
+                     onChange={handleChange}
+                     className="w-full p-2 border rounded"
+                  />
+               </div>
                {/* Servings */}
                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -480,6 +494,9 @@ export default function MenuManagementPage() {
                            Category
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                           Section
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                            Available
                         </th>
                         <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
@@ -498,6 +515,9 @@ export default function MenuManagementPage() {
                            </td>
                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {item.category}
+                           </td>
+                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {item.section}
                            </td>
                            <td className="px-6 py-4 whitespace-nowrap">
                               <button

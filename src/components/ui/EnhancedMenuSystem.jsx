@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
    Plus,
    ShoppingCart,
@@ -7,188 +9,12 @@ import {
    Flame,
    Coffee,
    Utensils,
+   X,
 } from "lucide-react";
+import { useDispatch } from "react-redux";
+// import { addItem } from "../../store/slices/cartSlice";
 
-// Enhanced menu data with better variety
-const cafeMenu = [
-   {
-      section: "Quick Bites",
-      icon: <Coffee className="w-5 h-5" />,
-      items: [
-         {
-            name: "Veg Puff",
-            price: 70,
-            image: "/cafe/latte.jpg",
-            rating: 4.2,
-            time: "10 min",
-            spicy: 2,
-         },
-         {
-            name: "Choco Lava Cake",
-            price: 109,
-            image: "/cafe/pancakes.jpg",
-            rating: 4.7,
-            time: "8 min",
-            spicy: 0,
-         },
-         {
-            name: "Paneer Sandwich",
-            price: 139,
-            image: "/cafe/fries.jpg",
-            rating: 4.4,
-            time: "12 min",
-            spicy: 1,
-         },
-         {
-            name: "Masala Chai",
-            price: 60,
-            image: "/cafe/coffee.jpg",
-            rating: 4.5,
-            time: "5 min",
-            spicy: 1,
-         },
-         {
-            name: "Cold Coffee",
-            price: 90,
-            image: "/cafe/fries.jpg",
-            rating: 4.3,
-            time: "3 min",
-            spicy: 0,
-         },
-      ],
-   },
-   {
-      section: "Hot & Cold Beverages",
-      icon: <Coffee className="w-5 h-5" />,
-      items: [
-         {
-            name: "Masala Chai",
-            price: 60,
-            image: "/cafe/pancakes.jpg",
-            rating: 4.5,
-            time: "5 min",
-            spicy: 1,
-         },
-         {
-            name: "Cold Coffee",
-            price: 90,
-            image: "/cafe/fries.jpg",
-            rating: 4.3,
-            time: "3 min",
-            spicy: 0,
-         },
-         {
-            name: "Green Tea",
-            price: 50,
-            image: "/cafe/latte.jpg",
-            rating: 4.1,
-            time: "4 min",
-            spicy: 0,
-         },
-         {
-            name: "Mango Lassi",
-            price: 80,
-            image: "/cafe/coffee.jpg",
-            rating: 4.6,
-            time: "5 min",
-            spicy: 0,
-         },
-         {
-            name: "Green Tea2",
-            price: 50,
-            image: "/cafe/latte.jpg",
-            rating: 4.1,
-            time: "4 min",
-            spicy: 0,
-         },
-         {
-            name: "Mango Lassi3",
-            price: 80,
-            image: "/cafe/coffee.jpg",
-            rating: 4.6,
-            time: "5 min",
-            spicy: 0,
-         },
-      ],
-   },
-   {
-      section: "Breakfasts",
-      icon: <Utensils className="w-5 h-5" />,
-      items: [
-         {
-            name: "Poha",
-            price: 80,
-            image: "/cafe/coffee.jpg",
-            rating: 4.3,
-            time: "15 min",
-            spicy: 2,
-         },
-         {
-            name: "Upma",
-            price: 70,
-            image: "/cafe/pancakes.jpg",
-            rating: 4.2,
-            time: "12 min",
-            spicy: 1,
-         },
-         {
-            name: "Aloo Paratha",
-            price: 120,
-            image: "/cafe/latte.jpg",
-            rating: 4.6,
-            time: "18 min",
-            spicy: 2,
-         },
-         {
-            name: "Idli Sambar",
-            price: 90,
-            image: "/cafe/fries.jpg",
-            rating: 4.4,
-            time: "10 min",
-            spicy: 1,
-         },
-      ],
-   },
-   {
-      section: "Desserts",
-      icon: <Star className="w-5 h-5" />,
-      items: [
-         {
-            name: "Gulab Jamun",
-            price: 80,
-            image: "/cafe/coffee.jpg",
-            rating: 4.8,
-            time: "2 min",
-            spicy: 0,
-         },
-         {
-            name: "Ras Malai",
-            price: 90,
-            image: "/cafe/fries.jpg",
-            rating: 4.7,
-            time: "2 min",
-            spicy: 0,
-         },
-         {
-            name: "Chocolate Brownie",
-            price: 120,
-            image: "/cafe/latte.jpg",
-            rating: 4.5,
-            time: "3 min",
-            spicy: 0,
-         },
-         {
-            name: "Kulfi",
-            price: 60,
-            image: "/cafe/pancakes.jpg",
-            rating: 4.4,
-            time: "1 min",
-            spicy: 0,
-         },
-      ],
-   },
-];
-
+// DabbaMenu remains hardcoded as requested
 const dabbaMenu = [
    {
       title: "Comfort Meals",
@@ -200,7 +26,7 @@ const dabbaMenu = [
             image: "/lunch_box_two.png",
             rating: 4.6,
             servings: "2-3",
-            spicy: 3,
+            spiceLevel: 3,
          },
          {
             name: "Mysore Curd Rice Meal",
@@ -209,7 +35,7 @@ const dabbaMenu = [
             image: "/lunch_box.png",
             rating: 4.4,
             servings: "1-2",
-            spicy: 1,
+            spiceLevel: 1,
          },
       ],
    },
@@ -223,7 +49,7 @@ const dabbaMenu = [
             image: "/lunch_box_two.png",
             rating: 4.7,
             servings: "2-3",
-            spicy: 2,
+            spiceLevel: 2,
          },
       ],
    },
@@ -245,18 +71,78 @@ function SpicyIndicator({ level }) {
    );
 }
 
+// HELPER FOR IMGS FOR NOW
+const localCafeImages = [
+   "/cafe/coffee.jpg",
+   "/cafe/fries.jpg",
+   "/cafe/latte.jpg",
+   "/cafe/pancakes.jpg",
+];
+
+// Helper to get correct image
+function getCafeImage(item, index) {
+   if (item.image?.startsWith("https://example.com")) {
+      // Rotate between the 4 local images
+      return localCafeImages[index % localCafeImages.length];
+   }
+   return item.image;
+}
+
+// details modal
+const MenuDetailModal = ({ item, onClose }) => {
+   if (!item) return null;
+
+   return (
+      <div
+         className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
+         onClick={onClose}
+      >
+         <div
+            className="relative w-full max-w-lg p-6 bg-white rounded-lg shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+         >
+            <button
+               onClick={onClose}
+               className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+            >
+               <X size={24} />
+            </button>
+            <img
+               src={getCafeImage(item, Math.floor(Math.random() * 20) + 1)}
+               alt={item.name}
+               className="w-full h-64 object-cover rounded-md mb-4"
+            />
+            <h2 className="text-3xl font-bold text-gray-800">{item.name}</h2>
+            <div className="flex items-center my-2 space-x-4">
+               <span className="text-2xl font-bold text-green-700">
+                  ₹{item.price}
+               </span>
+               <div className="flex items-center gap-1 text-sm text-gray-600">
+                  <Star className="w-4 h-4 text-yellow-500 fill-current" />{" "}
+                  {item.rating}
+               </div>
+            </div>
+            <p className="text-gray-600 my-4">{item.description}</p>
+            {/* You can add more details here later, like ingredients or allergens */}
+         </div>
+      </div>
+   );
+};
+
 function MenuCard({ item, onAdd, type = "cafe" }) {
    const [isAdding, setIsAdding] = useState(false);
 
-   const handleAdd = () => {
+   const handleAdd = (e) => {
       setIsAdding(true);
       setTimeout(() => setIsAdding(false), 600);
-      onAdd(item);
+      onAdd(e); // Pass the event object up
    };
 
    if (type === "dabba") {
+      // This part for dabba menu remains unchanged
       return (
          <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100">
+            {/* ... Dabba card JSX is unchanged ... */}
             <div className="flex flex-col md:flex-row">
                <div className="md:w-2/3 p-6">
                   <div className="flex items-start justify-between mb-3">
@@ -283,7 +169,7 @@ function MenuCard({ item, onAdd, type = "cafe" }) {
                               <Utensils className="w-4 h-4" />
                               {item.servings}
                            </span>
-                           <SpicyIndicator level={item.spicy} />
+                           <SpicyIndicator level={item.spiceLevel} />
                         </div>
                      </div>
 
@@ -313,7 +199,7 @@ function MenuCard({ item, onAdd, type = "cafe" }) {
 
                <div className="md:w-1/3 relative">
                   <img
-                     src={item.image}
+                     src={getCafeImage(item, i)}
                      alt={item.name}
                      className="w-full h-48 md:h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -326,6 +212,7 @@ function MenuCard({ item, onAdd, type = "cafe" }) {
       );
    }
 
+   // UPDATED FOR CAFE MENU - uses data from backend
    return (
       <div className="min-w-[280px] bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100">
          <div className="relative">
@@ -340,7 +227,8 @@ function MenuCard({ item, onAdd, type = "cafe" }) {
             </div>
             <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm rounded-full px-3 py-1 text-white text-sm flex items-center gap-1">
                <Clock className="w-3 h-3" />
-               {item.time}
+               {/* Using preparationTime from backend */}
+               {item.preparationTime} min
             </div>
          </div>
 
@@ -349,7 +237,8 @@ function MenuCard({ item, onAdd, type = "cafe" }) {
                <h4 className="font-semibold text-lg text-gray-800 group-hover:text-green-700 transition-colors">
                   {item.name}
                </h4>
-               <SpicyIndicator level={item.spicy} />
+               {/* Using spiceLevel from backend */}
+               <SpicyIndicator level={item.spiceLevel} />
             </div>
 
             <div className="flex items-center justify-between">
@@ -386,9 +275,60 @@ function MenuCard({ item, onAdd, type = "cafe" }) {
 export default function EnhancedMenuSystem() {
    const [activeMenu, setActiveMenu] = useState("cafe");
    const [cart, setCart] = useState([]);
+   const [selectedItem, setSelectedItem] = useState(null);
+
+   // State for holding fetched cafe menu data
+   const [cafeMenu, setCafeMenu] = useState([]);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState(null);
+   const dispatch = useDispatch(); // Get the dispatch function
+
+   useEffect(() => {
+      const fetchCafeMenu = async () => {
+         try {
+            setLoading(true);
+            const response = await axios.get(
+               `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/menu`
+            );
+            const items = response.data.data;
+
+            // Process the flat array from the backend into grouped sections
+            const groupedMenu = items.reduce((acc, item) => {
+               // Find if a section for this item's category already exists
+               let section = acc.find((sec) => sec.section === item.category);
+
+               // If not, create a new section
+               if (!section) {
+                  section = {
+                     section: item.category,
+                     icon: <Coffee className="w-5 h-5" />,
+                     items: [],
+                  };
+                  acc.push(section);
+               }
+
+               // Add the item to the correct section
+               section.items.push(item);
+
+               return acc;
+            }, []);
+
+            setCafeMenu(groupedMenu);
+            setError(null);
+         } catch (err) {
+            setError("Could not load the menu. Please try again later.");
+            console.error(err);
+         } finally {
+            setLoading(false);
+         }
+      };
+
+      fetchCafeMenu();
+   }, []); // Empty dependency array means this runs once on component mount
 
    const addToCart = (item) => {
       setCart((prev) => [...prev, item]);
+      console.log(cart, "cart");
    };
 
    return (
@@ -419,6 +359,11 @@ export default function EnhancedMenuSystem() {
                   Dabba Menu
                </button>
             </div>
+            {/* line to render the modal when an item is selected  */}
+            <MenuDetailModal
+               item={selectedItem}
+               onClose={() => setSelectedItem(null)}
+            />
 
             {/* Cart Indicator */}
             {cart.length > 0 && (
@@ -432,31 +377,51 @@ export default function EnhancedMenuSystem() {
             <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20">
                {activeMenu === "cafe" ? (
                   <div className="space-y-16">
-                     {cafeMenu.map((group, idx) => (
-                        <div key={idx} className="group">
-                           <div className="flex items-center gap-3 mb-8">
-                              <div className="p-3 bg-green-100 rounded-xl text-green-700">
-                                 {group.icon}
+                     {loading && (
+                        <p className="text-center">
+                           Loading our delicious menu...
+                        </p>
+                     )}
+                     {error && (
+                        <p className="text-center text-red-500">{error}</p>
+                     )}
+                     {!loading &&
+                        !error &&
+                        cafeMenu.map((group, idx) => (
+                           <div key={idx} className="group">
+                              <div className="flex items-center gap-3 mb-8">
+                                 <div className="p-3 bg-green-100 rounded-xl text-green-700">
+                                    {group.icon}
+                                 </div>
+                                 <h3 className="text-3xl font-bold text-gray-800 group-hover:text-green-700 transition-colors">
+                                    {group.section}
+                                 </h3>
                               </div>
-                              <h3 className="text-3xl font-bold text-gray-800 group-hover:text-green-700 transition-colors">
-                                 {group.section}
-                              </h3>
+                              <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
+                                 {group.items.map((item, i) => (
+                                    // Wrap MenuCard in a div to capture the click
+                                    <div
+                                       key={item._id || i}
+                                       onClick={() => setSelectedItem(item)}
+                                       className="cursor-pointer"
+                                    >
+                                       <MenuCard
+                                          key={item._id || i} // Use MongoDB's _id for the key
+                                          item={{
+                                             ...item,
+                                             image: getCafeImage(item, i),
+                                          }} //getCafeImages is for placeholder imgs for now
+                                          onAdd={addToCart}
+                                       />
+                                    </div>
+                                 ))}
+                              </div>
                            </div>
-
-                           <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
-                              {group.items.map((item, i) => (
-                                 <MenuCard
-                                    key={i}
-                                    item={item}
-                                    onAdd={addToCart}
-                                 />
-                              ))}
-                           </div>
-                        </div>
-                     ))}
+                        ))}
                   </div>
                ) : (
                   <div className="space-y-8">
+                     {/* Dabba menu rendering remains unchanged */}
                      {dabbaMenu.map((section, i) => (
                         <div
                            key={i}
@@ -468,7 +433,6 @@ export default function EnhancedMenuSystem() {
                                  {section.title}
                               </h3>
                            </div>
-
                            <div className="p-6 space-y-6">
                               {section.items.map((item, j) => (
                                  <MenuCard
