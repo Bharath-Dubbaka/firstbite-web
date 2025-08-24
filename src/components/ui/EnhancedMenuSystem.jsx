@@ -10,9 +10,11 @@ import {
    Coffee,
    Utensils,
    X,
+   Eye,
 } from "lucide-react";
-import { useDispatch } from "react-redux";
-// import { addItem } from "../../store/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addItem } from "../../store/slices/cartSlice";
+import { useRouter, usePathname } from "next/navigation";
 
 // DabbaMenu remains hardcoded as requested
 const dabbaMenu = [
@@ -129,13 +131,25 @@ const MenuDetailModal = ({ item, onClose }) => {
    );
 };
 
-function MenuCard({ item, onAdd, type = "cafe" }) {
+function MenuCard({ item, onAdd, onShowDetails, type = "cafe" }) {
    const [isAdding, setIsAdding] = useState(false);
+   const dispatch = useDispatch();
 
    const handleAdd = (e) => {
+      e.stopPropagation(); // Prevent event bubbling
       setIsAdding(true);
       setTimeout(() => setIsAdding(false), 600);
-      onAdd(e); // Pass the event object up
+      onAdd(item); // Pass the item, not the event
+   };
+
+   const handleImageClick = (e) => {
+      e.stopPropagation(); // Prevent event bubbling
+      onShowDetails(item);
+   };
+
+   const handleViewMore = (e) => {
+      e.stopPropagation(); // Prevent event bubbling
+      onShowDetails(item);
    };
 
    if (type === "dabba") {
@@ -199,9 +213,10 @@ function MenuCard({ item, onAdd, type = "cafe" }) {
 
                <div className="md:w-1/3 relative">
                   <img
-                     src={getCafeImage(item, i)}
+                     src={getCafeImage(item, Math.floor(Math.random() * 4))}
                      alt={item.name}
-                     className="w-full h-48 md:h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                     className="w-full h-48 md:h-full object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
+                     onClick={handleImageClick}
                   />
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-sm font-medium text-gray-700">
                      {item.servings} servings
@@ -219,7 +234,8 @@ function MenuCard({ item, onAdd, type = "cafe" }) {
             <img
                src={item.image}
                alt={item.name}
-               className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+               className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
+               onClick={handleImageClick}
             />
             <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1 text-sm">
                <Star className="w-3 h-3 text-yellow-500 fill-current" />
@@ -242,9 +258,18 @@ function MenuCard({ item, onAdd, type = "cafe" }) {
             </div>
 
             <div className="flex items-center justify-between">
-               <span className="text-xl font-bold text-green-700">
-                  ₹{item.price}
-               </span>
+               <div className="flex items-center gap-3">
+                  <span className="text-xl font-bold text-green-700">
+                     ₹{item.price}
+                  </span>
+                  <button
+                     onClick={handleViewMore}
+                     className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                  >
+                     <Eye className="w-3 h-3" />
+                     View More
+                  </button>
+               </div>
                <button
                   onClick={handleAdd}
                   disabled={isAdding}
@@ -274,14 +299,15 @@ function MenuCard({ item, onAdd, type = "cafe" }) {
 
 export default function EnhancedMenuSystem() {
    const [activeMenu, setActiveMenu] = useState("cafe");
-   const [cart, setCart] = useState([]);
    const [selectedItem, setSelectedItem] = useState(null);
+   const router = useRouter();
 
    // State for holding fetched cafe menu data
    const [cafeMenu, setCafeMenu] = useState([]);
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState(null);
-   const dispatch = useDispatch(); // Get the dispatch function
+   const dispatch = useDispatch();
+   const { items } = useSelector((state) => state.cart);
 
    useEffect(() => {
       const fetchCafeMenu = async () => {
@@ -327,8 +353,16 @@ export default function EnhancedMenuSystem() {
    }, []); // Empty dependency array means this runs once on component mount
 
    const addToCart = (item) => {
-      setCart((prev) => [...prev, item]);
-      console.log(cart, "cart");
+      dispatch(addItem(item));
+      console.log(item, "added item");
+   };
+
+   const handleCartClick = () => {
+      router.push("/cart");
+   };
+
+   const showItemDetails = (item) => {
+      setSelectedItem(item);
    };
 
    return (
@@ -359,17 +393,21 @@ export default function EnhancedMenuSystem() {
                   Dabba Menu
                </button>
             </div>
-            {/* line to render the modal when an item is selected  */}
+
+            {/* Modal for item details */}
             <MenuDetailModal
                item={selectedItem}
                onClose={() => setSelectedItem(null)}
             />
 
             {/* Cart Indicator */}
-            {cart.length > 0 && (
-               <div className="fixed bottom-6 right-6 bg-green-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2 z-50">
+            {items.length > 0 && (
+               <div
+                  className="fixed bottom-6 right-6 bg-green-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2 z-50 cursor-pointer hover:bg-green-700 transition-colors"
+                  onClick={handleCartClick}
+               >
                   <ShoppingCart className="w-5 h-5" />
-                  <span className="font-medium">{cart.length} items</span>
+                  <span className="font-medium">{items.length} items</span>
                </div>
             )}
 
@@ -399,21 +437,15 @@ export default function EnhancedMenuSystem() {
                               </div>
                               <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
                                  {group.items.map((item, i) => (
-                                    // Wrap MenuCard in a div to capture the click
-                                    <div
+                                    <MenuCard
                                        key={item._id || i}
-                                       onClick={() => setSelectedItem(item)}
-                                       className="cursor-pointer"
-                                    >
-                                       <MenuCard
-                                          key={item._id || i} // Use MongoDBs _id for the key
-                                          item={{
-                                             ...item,
-                                             image: getCafeImage(item, i),
-                                          }} //getCafeImages is for placeholder imgs for now
-                                          onAdd={addToCart}
-                                       />
-                                    </div>
+                                       item={{
+                                          ...item,
+                                          image: getCafeImage(item, i),
+                                       }}
+                                       onAdd={addToCart}
+                                       onShowDetails={showItemDetails}
+                                    />
                                  ))}
                               </div>
                            </div>
@@ -421,7 +453,7 @@ export default function EnhancedMenuSystem() {
                   </div>
                ) : (
                   <div className="space-y-8">
-                     {/* Dabba menu rendering remains unchanged */}
+                     {/* Dabba menu rendering */}
                      {dabbaMenu.map((section, i) => (
                         <div
                            key={i}
@@ -439,6 +471,7 @@ export default function EnhancedMenuSystem() {
                                     key={j}
                                     item={item}
                                     onAdd={addToCart}
+                                    onShowDetails={showItemDetails}
                                     type="dabba"
                                  />
                               ))}

@@ -24,6 +24,7 @@ const ClientProvider = ({ children }) => {
             console.log("📊 Redux State:", {
                auth: state.auth,
                firebase: state.firebase,
+               cart: state.cart,
                hasLocalStorageToken:
                   typeof window !== "undefined"
                      ? !!localStorage.getItem("firebaseToken")
