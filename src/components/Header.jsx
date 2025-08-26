@@ -160,7 +160,7 @@ export default function Header() {
                </nav>
 
                {/* DEBUG TOKEN BUTTON - REMOVE IN PRODUCTION */}
-               {process.env.NODE_ENV === "development" && (
+               {/* {process.env.NODE_ENV === "development" && (
                   <button
                      onClick={() => {
                         auth.currentUser
@@ -180,7 +180,7 @@ export default function Header() {
                   >
                      Copy Token
                   </button>
-               )}
+               )} */}
 
                {/* Auth State Display */}
                {isAuthenticated && user ? (

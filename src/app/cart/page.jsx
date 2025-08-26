@@ -8,6 +8,7 @@ import {
    decreaseQty,
    removeItem,
 } from "../../store/slices/cartSlice";
+import CheckoutButton from "../../components/CheckoutButton";
 
 const CartPage = () => {
    const dispatch = useDispatch();
@@ -102,9 +103,7 @@ const CartPage = () => {
                      <h2 className="text-xl font-bold">
                         Total: ₹{totalAmount}
                      </h2>
-                     <button className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
-                        Proceed to Checkout
-                     </button>
+                     <CheckoutButton />
                   </div>
                </div>
             </div>
