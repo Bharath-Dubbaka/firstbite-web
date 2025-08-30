@@ -238,6 +238,14 @@ export default function Header() {
                               <p className="text-xs md:text-sm text-indigo-600">
                                  ID: {user.uid}
                               </p>
+                              <p className="border-t-2 text-xs md:text-sm px-2 pt-2 mt-2 hover:bg-red-50 flex items-center transition-colors duration-200 w-full py-2 text-left">
+                                 <Link
+                                    href={"/orders"}
+                                    className="text-gray-700 hover:text-blue-700  font-medium text-sm uppercase tracking-wide transition-colors duration-200"
+                                 >
+                                    My Orders
+                                 </Link>
+                              </p>
                            </div>
 
                            <button

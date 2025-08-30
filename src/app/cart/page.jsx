@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -17,9 +18,81 @@ const CartPage = () => {
       (state) => state.cart
    );
 
+   const [activeOrder, setActiveOrder] = useState(null);
+   const [hasActiveOrder, setHasActiveOrder] = useState(false);
+
+   // Check for active orders on component mount
+   useEffect(() => {
+      checkForActiveOrders();
+   }, []);
+
    const handleGoBack = () => {
       router.back(); // Go back to previous page
       // Alternative: router.push('/') to go to home page specifically
+   };
+
+   // check for active orders before allowing checkout
+   const checkForActiveOrders = async () => {
+      try {
+         const currentUser = auth.currentUser;
+         if (!currentUser) return false;
+
+         const token = await currentUser.getIdToken();
+         const response = await axios.get("http://localhost:9999/api/orders", {
+            headers: { Authorization: `Bearer ${token}` },
+         });
+
+         const activeStatuses = [
+            "placed",
+            "confirmed",
+            "preparing",
+            "ready",
+            "dispatched",
+         ];
+         const activeOrder = response.data.find((order) =>
+            activeStatuses.includes(order.orderStatus)
+         );
+
+         return activeOrder;
+      } catch (error) {
+         console.error("Error checking active orders:", error);
+         return false;
+      }
+   };
+
+   const handleCheckout = async () => {
+      const activeOrder = await checkForActiveOrders();
+
+      if (activeOrder) {
+         // Show modal or alert
+         setShowActiveOrderModal(true);
+         setActiveOrder(activeOrder);
+         return;
+      }
+
+      // Proceed with normal checkout
+      proceedToCheckout();
+   };
+
+   const renderCheckoutButton = () => {
+      if (hasActiveOrder) {
+         return (
+            <div>
+               <button
+                  disabled
+                  className="w-full bg-gray-400 text-white py-3 rounded-lg cursor-not-allowed"
+               >
+                  Checkout Disabled - Active Order in Progress
+               </button>
+               <p className="text-sm text-gray-600 text-center mt-2">
+                  Complete or cancel your current order #
+                  {activeOrder?.orderNumber} to place a new one
+               </p>
+            </div>
+         );
+      }
+
+      return <CheckoutButton />;
    };
 
    return (
@@ -103,7 +176,7 @@ const CartPage = () => {
                      <h2 className="text-xl font-bold">
                         Total: ₹{totalAmount}
                      </h2>
-                     <CheckoutButton />
+                     {renderCheckoutButton()}
                   </div>
                </div>
             </div>
