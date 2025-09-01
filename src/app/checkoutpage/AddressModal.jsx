@@ -3,9 +3,23 @@ import { useSelector, useDispatch } from "react-redux";
 import { updateUserDetails } from "../../store/slices/firebaseSlice";
 import axios from "axios";
 import { apiClient } from "../../services/apiClient";
+import { getDistanceFromLatLonInKm } from "../../services/geolocation";
+// Define your business location and delivery radius
+const YOUR_LOCATION = {
+   latitude: 17.4399, // Example: secbad latitude
+   longitude: 78.4983, // Example: secbad longitude
+
+   // latitude: 18.498989, // Example: Vijayawada longitude
+   // longitude: 75.667427, // Example: Vijayawada longitude
+
+   // latitude: 17.5842, // Example: Yadagiri longitude
+   // longitude: 78.9461, // Example: Yadagiri longitude
+};
+const MAX_DELIVERY_RADIUS_KM = 40;
 
 const AddressModal = ({ addresses = [], onSelect, onClose }) => {
    const dispatch = useDispatch();
+
    //    const { user } = useSelector((state) => state.auth);
    const [showAddNew, setShowAddNew] = useState(false);
    const [saving, setSaving] = useState(false);
@@ -17,13 +31,88 @@ const AddressModal = ({ addresses = [], onSelect, onClose }) => {
       state: "",
       pincode: "",
       landmark: "",
+      latitude: null,
+      longitude: null,
    });
+   const [locationError, setLocationError] = useState(""); // State for error messages
 
    const handleInputChange = (field, value) => {
       setNewAddress((prev) => ({
          ...prev,
          [field]: value,
       }));
+   };
+
+   // 4. Function to get user's location and check radius
+   const handlePinLocation = () => {
+      if (!navigator.geolocation) {
+         setLocationError("Geolocation is not supported by your browser.");
+         return;
+      }
+
+      setSaving(true);
+      setLocationError("");
+
+      navigator.geolocation.getCurrentPosition(
+         (position) => {
+            const { latitude, longitude } = position.coords;
+
+            const distance = getDistanceFromLatLonInKm(
+               YOUR_LOCATION.latitude,
+               YOUR_LOCATION.longitude,
+               latitude,
+               longitude
+            );
+
+            if (distance > MAX_DELIVERY_RADIUS_KM) {
+               setLocationError(
+                  `Sorry, we only deliver within ${MAX_DELIVERY_RADIUS_KM}km. You are ~${Math.round(
+                     distance
+                  )}km away.`
+               );
+               console.log(latitude, longitude, "latitude longitude");
+               setSaving(false);
+               return;
+            }
+
+            // Location is valid, store coordinates and show the form
+            setNewAddress((prev) => ({
+               ...prev,
+               latitude,
+               longitude,
+            }));
+            setShowAddNew(true);
+            setSaving(false);
+         },
+         (error) => {
+            // --- THIS IS THE UPDATED PART ---
+            console.error("Geolocation Error:", error); // Keep this for detailed logs
+            let message =
+               "Could not get your location. Please try again. Please enable Location access in your browser settings.";
+
+            if (error.code === 1) {
+               // PERMISSION_DENIED
+               message =
+                  "Location access was denied. Please enable it in your browser settings.";
+            } else if (error.code === 2) {
+               // POSITION_UNAVAILABLE
+               message =
+                  "Your location could not be determined. Please check your network connection and OS location settings.";
+            } else if (error.code === 3) {
+               // TIMEOUT
+               message =
+                  "Getting your location took too long. Please try again.";
+            }
+            setLocationError(message);
+            setSaving(false);
+         },
+         {
+            // Optional: Add options for better accuracy
+            enableHighAccuracy: true, // Requests GPS if available
+            timeout: 10000, // 10 seconds
+            maximumAge: 0, // Don't use cached location
+         }
+      );
    };
 
    const handleSave = async () => {
@@ -39,7 +128,11 @@ const AddressModal = ({ addresses = [], onSelect, onClose }) => {
          );
          return;
       }
-
+      // Ensure coordinates are present before saving
+      if (!newAddress.latitude || !newAddress.longitude) {
+         alert("Location not pinned. Please use the location picker.");
+         return;
+      }
       try {
          setSaving(true);
 
@@ -102,6 +195,8 @@ const AddressModal = ({ addresses = [], onSelect, onClose }) => {
          state: "",
          pincode: "",
          landmark: "",
+         latitude: null, // Reset coordinates
+         longitude: null,
       });
       setShowAddNew(false);
    };
@@ -147,14 +242,32 @@ const AddressModal = ({ addresses = [], onSelect, onClose }) => {
                   )}
 
                   <button
-                     onClick={() => setShowAddNew(true)}
-                     className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                     onClick={handlePinLocation}
+                     disabled={saving}
+                     className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
                   >
-                     + Add New Address
+                     {saving ? "Getting Location..." : "+ Add New Address"}
                   </button>
+
+                  {/* 7. Display any location errors */}
+                  {locationError && (
+                     <p className="text-red-500 text-sm mt-2 text-center">
+                        {locationError}
+                     </p>
+                  )}
                </>
             ) : (
                <>
+                  {/* 8. Show a success message when location is pinned */}
+                  <div className="bg-green-100 border border-green-300 text-green-800 p-3 rounded-lg mb-4 text-center">
+                     <p className="font-semibold">
+                        Location Pinned Successfully!
+                     </p>
+                     <p className="text-sm">
+                        Please fill in the details below.
+                     </p>
+                  </div>
+
                   {/* Add new address form */}
                   <div className="space-y-3">
                      <input
@@ -256,143 +369,3 @@ const AddressModal = ({ addresses = [], onSelect, onClose }) => {
 };
 
 export default AddressModal;
-
-// import { useState } from "react";
-
-// const AddressModal = ({ addresses, onSelect, onClose }) => {
-//    const [showAddNew, setShowAddNew] = useState(false);
-//    const [newAddress, setNewAddress] = useState({
-//       label: "Home",
-//       addressLine1: "",
-//       city: "",
-//       state: "",
-//       pincode: "",
-//    });
-
-//    const handleSave = () => {
-//       if (
-//          !newAddress.addressLine1 ||
-//          !newAddress.city ||
-//          !newAddress.state ||
-//          !newAddress.pincode
-//       ) {
-//          alert("Please fill all required fields");
-//          return;
-//       }
-//       onSelect(newAddress);
-//    };
-
-//    return (
-//       <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-//          <div className="bg-white rounded-lg p-6 w-96">
-//             <h2 className="text-lg font-bold mb-4">Choose Address</h2>
-
-//             {!showAddNew ? (
-//                <>
-//                   {addresses.length > 0 ? (
-//                      addresses.map((addr, i) => (
-//                         <div
-//                            key={i}
-//                            className="border p-3 rounded mb-2 cursor-pointer hover:bg-gray-100"
-//                            onClick={() => onSelect(addr)}
-//                         >
-//                            <p className="font-semibold">{addr.label}</p>
-//                            <p>{addr.addressLine1}</p>
-//                            <p>
-//                               {addr.city}, {addr.state} - {addr.pincode}
-//                            </p>
-//                         </div>
-//                      ))
-//                   ) : (
-//                      <p className="text-gray-500 mb-2">No saved addresses</p>
-//                   )}
-//                   <button
-//                      onClick={() => setShowAddNew(true)}
-//                      className="w-full bg-blue-600 text-white py-2 rounded-lg"
-//                   >
-//                      + Add New Address
-//                   </button>
-//                </>
-//             ) : (
-//                <>
-//                   <input
-//                      type="text"
-//                      placeholder="Label (Home/Work/etc)"
-//                      value={newAddress.label}
-//                      onChange={(e) =>
-//                         setNewAddress({ ...newAddress, label: e.target.value })
-//                      }
-//                      className="border p-2 w-full mb-2 rounded"
-//                   />
-//                   <input
-//                      type="text"
-//                      placeholder="Address Line 1"
-//                      value={newAddress.addressLine1}
-//                      onChange={(e) =>
-//                         setNewAddress({
-//                            ...newAddress,
-//                            addressLine1: e.target.value,
-//                         })
-//                      }
-//                      className="border p-2 w-full mb-2 rounded"
-//                   />
-//                   <input
-//                      type="text"
-//                      placeholder="City"
-//                      value={newAddress.city}
-//                      onChange={(e) =>
-//                         setNewAddress({ ...newAddress, city: e.target.value })
-//                      }
-//                      className="border p-2 w-full mb-2 rounded"
-//                   />
-//                   <input
-//                      type="text"
-//                      placeholder="State"
-//                      value={newAddress.state}
-//                      onChange={(e) =>
-//                         setNewAddress({ ...newAddress, state: e.target.value })
-//                      }
-//                      className="border p-2 w-full mb-2 rounded"
-//                   />
-//                   <input
-//                      type="text"
-//                      placeholder="Pincode"
-//                      value={newAddress.pincode}
-//                      onChange={(e) =>
-//                         setNewAddress({
-//                            ...newAddress,
-//                            pincode: e.target.value,
-//                         })
-//                      }
-//                      className="border p-2 w-full mb-2 rounded"
-//                   />
-
-//                   <div className="flex gap-2 mt-3">
-//                      <button
-//                         onClick={handleSave}
-//                         className="flex-1 bg-green-600 text-white py-2 rounded-lg"
-//                      >
-//                         Save
-//                      </button>
-//                      <button
-//                         onClick={() => setShowAddNew(false)}
-//                         className="flex-1 border py-2 rounded-lg"
-//                      >
-//                         Cancel
-//                      </button>
-//                   </div>
-//                </>
-//             )}
-
-//             <button
-//                onClick={onClose}
-//                className="mt-4 w-full border py-2 rounded-lg"
-//             >
-//                Close
-//             </button>
-//          </div>
-//       </div>
-//    );
-// };
-
-// export default AddressModal;
